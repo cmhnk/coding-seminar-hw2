@@ -6,6 +6,7 @@ end
 #
 #end
 
+
 def compare(current, computer)
   if user_won?(current, computer)
     puts "that's the number I picked!! You win!"
