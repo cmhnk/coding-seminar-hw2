@@ -2,20 +2,20 @@ def user_won?(current_guess, computer)
   current_guess == computer
 end
 
-#def leaderboard?
-#
-#end
+def leaderboard
+
+end
 
 
 def compare(current, computer)
   if user_won?(current, computer)
-    puts "that's the number I picked!! You win!"
+    puts 'that\'s the number I picked!! You win!'
     exit
   elsif current > computer
-    puts "too high!"
+    puts 'too high!'
     feedback = 'H'
   elsif current < computer
-    puts "too low!"
+    puts 'too low!'
     feedback = 'L'
   end
 end
@@ -48,14 +48,14 @@ end
 while informative_guesses.length < 2 do
   current = gets.chomp.to_i
   if user_won?(current, computer)
-    puts "oh mah gad, that's right! you win!"
+    puts 'oh mah gad, that\'s right! you win!'
     exit
   elsif feedback[-1] == 'H'
     if current < informative_guesses[-1]
       feedback << compare(current, computer)
       informative_guesses << current
     else
-      puts "Way to waste a guess, ya airhead!"
+      puts 'Way to waste a guess, ya airhead!'
     end
     total_guesses << current
   elsif feedback[-1] == 'L'
@@ -63,7 +63,7 @@ while informative_guesses.length < 2 do
       feedback << compare(current, computer)
       informative_guesses << current
     else
-      puts "Um, are you listening??"
+      puts 'Um, are you listening??'
     end
     total_guesses << current
   end
@@ -74,7 +74,7 @@ while informative_guesses.length >= 2 && trials < 6 do
   current = gets.chomp.to_i
   info = available_info_hash[feedback[-2]][feedback[-1]]
   if user_won?(current, computer)
-    puts "you win! good job!"
+    puts 'you win! good job!'
     exit
   elsif info == 'min'
     # guess should be greater than lower boundary, which is guesses[-1]
@@ -82,7 +82,7 @@ while informative_guesses.length >= 2 && trials < 6 do
       feedback << compare(current, computer)
       informative_guesses << current # keep informative guesses separate from total guesses
     elsif current < informative_guesses[-1] #snarky mode
-      puts "helloooooo, you just wasted a guess!"
+      puts 'helloooooo, you just wasted a guess!'
     end
     total_guesses << current
   elsif info == 'max, min'
@@ -91,7 +91,7 @@ while informative_guesses.length >= 2 && trials < 6 do
       feedback << compare(current, computer)
       informative_guesses << current
     else
-      puts "Are you feeling okay?"
+      puts 'Are you feeling okay?'
     end
     total_guesses << current
   elsif info == 'min, max'
@@ -99,7 +99,7 @@ while informative_guesses.length >= 2 && trials < 6 do
       feedback << compare(current, computer)
       informative_guesses << current
     else
-      puts "I feel like you're not paying attention...guess again -- and use the hints this time!"
+      puts 'I feel like you\'re not paying attention...guess again -- and use the hints this time!'
     end
     total_guesses << current
   elsif info == 'max'
@@ -107,7 +107,7 @@ while informative_guesses.length >= 2 && trials < 6 do
       feedback << compare(current, computer)
       informative_guesses << current
     else
-      puts "Don't make me be snarky...guess again -- and use the hints this time!"
+      puts 'Don\'t make me be snarky...guess again -- and use the hints this time!'
     end
     total_guesses << current
   end
