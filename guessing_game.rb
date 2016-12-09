@@ -1,3 +1,14 @@
+def get_guess(trials)
+  begin
+    current = gets.chomp
+    Integer(current)
+    current = current.to_i
+  rescue ArgumentError, TypeError
+      puts 'You didn\'t enter anything...'
+      retry
+  end
+end
+
 def user_won?(current_guess, computer)
   current_guess == computer
 end
@@ -13,7 +24,7 @@ end
 def leaderboard(current, computer, name, total_guesses, winners)
   if user_won?(current, computer)
     timestamp = Time.now
-    winners << {:name => name, :score => (total_guesses.length + 1), :time => timestamp.inspect}
+    winners << {:time => timestamp.inspect, :name => name, :score => (total_guesses.length)}
   end
   puts "~~~~~~~~HIGH SCORES:~~~~~~~~\n\n"
   my_winners = winners.sort_by {|winner| winner[:score]}
@@ -22,12 +33,6 @@ def leaderboard(current, computer, name, total_guesses, winners)
     puts "#{winner[:name]}\t\t\t #{winner[:score]}"
   end
 end
-
-
-#def leaderboard(name)
-#  if user_won?(current_guess, computer)
-#  puts 'Here is the leaderboard:'
-#end
 
 def again?(winners)
   puts 'Would you like to play again? Enter y or n'
@@ -44,12 +49,7 @@ def again?(winners)
   end
 end
 
-
-
 def compare(current, computer)
-  #if user_won?(current, computer)
-  #  puts 'that\'s the number I picked!! You win!'
-  #  exit
   if current > computer
     puts 'too high!'
     feedback = 'H'
@@ -77,23 +77,25 @@ def main(winners)
   feedback = []
   informative_guesses = []
   total_guesses = []
-  trials = 1
+  trials = 0
 
-  while trials == 1 do
-    current = gets.chomp.to_i
-    feedback << compare(current, computer)
+  while trials < 3 && feedback.length == 0 do
+    current = get_guess(trials)
+    total_guesses << current
+    trials += 1
     if user_won?(current, computer)
       winner_display(name, total_guesses)
       leaderboard(current, computer, name, total_guesses, winners)
       again?(winners)
     end
+    feedback << compare(current, computer)
     informative_guesses << current
-    total_guesses << current
-    trials += 1
   end
 
-  while informative_guesses.length < 2 do
-    current = gets.chomp.to_i
+  while informative_guesses.length < 2 && feedback.length != 0 do   # was informative_guesses.length
+    current = get_guess(trials)
+    trials += 1
+    total_guesses << current
     if user_won?(current, computer)
       winner_display(name, total_guesses)
       leaderboard(current, computer, name, total_guesses, winners)
@@ -105,21 +107,22 @@ def main(winners)
       else
         puts 'Way to waste a guess, ya airhead!'
       end
-      total_guesses << current
     elsif feedback[-1] == 'L'
       if current > informative_guesses[-1]
         feedback << compare(current, computer)
         informative_guesses << current
       else
-        puts 'Um, are you listening??'
+        puts 'Dude, pay attention!'
       end
-      total_guesses << current
+    else
+      feedback << compare(current, computer)
     end
-    trials += 1
   end
 
-  while informative_guesses.length >= 2 && trials < 11 do
-    current = gets.chomp.to_i
+  while informative_guesses.length >= 2 && trials < 10 do
+    current = get_guess(trials)
+    trials += 1
+    total_guesses << current
     info = available_info_hash[feedback[-2]][feedback[-1]]
     if user_won?(current, computer)
       winner_display(name, total_guesses)
@@ -133,7 +136,6 @@ def main(winners)
       elsif current < informative_guesses[-1] #snarky mode
         puts 'helloooooo, you just wasted a guess!'
       end
-      total_guesses << current
     elsif info == 'max, min'
       # normal mode
       if current < informative_guesses[-2] && current > informative_guesses[-1]
@@ -142,7 +144,6 @@ def main(winners)
       else
         puts 'Are you feeling okay?'
       end
-      total_guesses << current
     elsif info == 'min, max'
       if current > informative_guesses[-2] && current < informative_guesses[-1]
         feedback << compare(current, computer)
@@ -150,7 +151,6 @@ def main(winners)
       else
         puts 'I feel like you\'re not paying attention...guess again -- and use the hints this time!'
       end
-      total_guesses << current
     elsif info == 'max'
       if current < informative_guesses[-1]
         feedback << compare(current, computer)
@@ -158,13 +158,12 @@ def main(winners)
       else
         puts 'Don\'t make me be snarky...guess again -- and use the hints this time!'
       end
-      total_guesses << current
     end
-    trials += 1
   end
 
-  if user_won?(current, computer)==FALSE && trials == 11
+  if user_won?(current, computer)==FALSE && trials == 10
     puts "\nSorry, the number was #{computer}. You lose. Better luck next time!"
+    leaderboard(current, computer, name, total_guesses, winners)
     again?(winners)
   end
 end
@@ -176,4 +175,4 @@ main(winners)
 # trials does not end at 11
 # losing doesn't appear to happen
 # when 2 high scorers have the same score, defaults to order them by alphabet
-# add time instead 
+# add time instead
