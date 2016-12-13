@@ -67,7 +67,6 @@ def main(winners)
   puts "Hello, #{name}. I am choosing a number between 1 and 100..."
   comp_possibilities = (1..100).to_a
   computer = comp_possibilities.sample
-  computer = 56
 
   puts "Okay, guess the number!"
 
@@ -170,9 +169,3 @@ end
 
 winners =[]
 main(winners)
-
-# current bugs to address:
-# trials does not end at 11
-# losing doesn't appear to happen
-# when 2 high scorers have the same score, defaults to order them by alphabet
-# add time instead
